@@ -1,8 +1,8 @@
-#To compile
+# To compile
 
 `make`
 
-#To Execute
+# To Execute
 
 `./socket [-s|-c] [-m (1|2)] [-p (port number)]`
 
@@ -10,6 +10,6 @@
 
 () are options to use use with optionals parameters
 
-#To clean or remove object and executable files
+# To clean or remove object and executable files
 
 `make clean`
