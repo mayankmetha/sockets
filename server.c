@@ -1,7 +1,9 @@
 #include "main.h"
 
+//interrupt variable
 int loopBreak = 0;
 
+//interrupt handler
 void inthandler(int signum) {
     loopBreak = 1;
 }
