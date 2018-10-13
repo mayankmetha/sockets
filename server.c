@@ -35,7 +35,7 @@ void server(unsigned int mode,unsigned int port) {
                 break;
             case ENOBUFS:
             case ENOMEM:
-                printf("Insufficient memory is available.  The socket cannot be created until sufficient resources are freed.");
+                printf("Insufficient memory is available. The socket cannot be created until sufficient resources are freed.");
                 break;
             case EPROTONOSUPPORT:
                 printf("The protocol type or the specified protocol is not supported within this domain.");
