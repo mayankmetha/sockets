@@ -1,9 +1,17 @@
 #include "main.h"
 
+int loopBreak = 0;
+
+void inthandler(int signum) {
+    loopBreak = 1;
+}
+
 void server(unsigned int mode,unsigned int port) {
     //variables
+    int backlog = 10;
     int s_socket;
-    struct sockaddr_in s_address;
+    int c_socket;
+    struct sockaddr_in s_address, c_address;
 
     //assign values to s_address
     //internet address
@@ -48,6 +56,158 @@ void server(unsigned int mode,unsigned int port) {
     // step 2 :- bind socket to address
     if((bind(s_socket,(struct sockaddr *)&s_address,sizeof(s_address))) != 0) {
         printf("\nServer socket address binding error:\n\t");
-        //TODO: solve error with errno
+        switch(errno) {
+            case EACCES:
+                printf("The address is protected, and the user is not the superuser.");
+                break;
+            case EADDRINUSE:
+                printf("The given address is already in use.");
+                break;
+            case EBADF:
+                printf("Not a valid file descriptor.");
+                break;
+            case EINVAL:
+                printf("The socket is already bound to an address.");
+                break;
+            case ENOTSOCK:
+                printf("The file descriptor does not refer to a socket.");
+                break;
+            default: printf("Unknown error!");
+        }
+        printf("\n");
+    }
+
+    // step 3 :- make socket listen for incoming connections
+    if((listen(s_socket,backlog)) != 0) {
+        printf("\nServer listen error:\n\t");
+        switch(errno) {
+            case EADDRINUSE:
+                printf("The given address is already in use.");
+                break;
+            case EBADF:
+                printf("Not a valid file descriptor.");
+                break;
+            case EOPNOTSUPP:
+                printf("The socket is not of a type that supports this operation.");
+                break;
+            case ENOTSOCK:
+                printf("The file descriptor does not refer to a socket.");
+                break;
+            default: printf("Unknown error!");
+        }
+        printf("\n");
+    }
+
+    //interrupt registration
+    signal(SIGINT, inthandler);
+
+    //step 4 :- accept client connection
+    while(!loopBreak) {
+        socklen_t addrlen = sizeof(c_address);
+        c_socket = accept(s_socket,(struct sockaddr *)&c_address,&addrlen);
+        if(c_socket < 0) {
+            printf("\nServer accept error:\n\t");
+            switch(errno) {
+                case ENETDOWN:
+                    printf("Network is down.");
+                    break;
+                case ENOPROTOOPT:
+                    printf("Protocol not available.");
+                    break;
+                case EHOSTDOWN:
+                    printf("Host is down.");
+                    break;
+                case ENONET:
+                    printf("Machine is not on the network.");
+                    break;
+                case EHOSTUNREACH:
+                    printf("Host is unreachable.");
+                    break;
+                case ENETUNREACH:
+                    printf("Network unreachable.");
+                    break;
+                case ENOSR:
+                    printf("No STREAM resources.");
+                    break;
+                case ESOCKTNOSUPPORT:
+                    printf("Socket type not supported.");
+                    break;
+                case EPROTONOSUPPORT:
+                    printf("Protocol not supported.");
+                    break;
+                case ETIMEDOUT:
+                    printf("Connection timed out.");
+                    break;
+                case EAGAIN:
+                    printf("The socket is marked nonblocking and no connections are present to be accepted.");
+                    break;
+                case EBADF:
+                    printf("Not a valid file descriptor.");
+                    break;
+                case ECONNABORTED:
+                    printf("A connection has been aborted.");
+                    break;
+                case EFAULT:
+                    printf("The client address structure is not in a writable part of the user address space.");
+                    break;
+                case EINTR:
+                    printf("The system call was interrupted by a signal that was caught before a valid connection arrived.");
+                    break;
+                case EINVAL:
+                    printf("Socket is not listening for connections, or address structure length is invalid");
+                    break;
+                case EMFILE:
+                    printf("The per-process limit on the number of open file descriptors has been reached.");
+                    break;
+                case ENFILE:
+                    printf("The system-wide limit on the total number of open files has been reached.");
+                    break;
+                case ENOBUFS:
+                case ENOMEM:
+                    printf("Not  enough free memory.");
+                    break;
+                case ENOTSOCK:
+                    printf("The file descriptor does not refer to a socket.");
+                    break;
+                case EOPNOTSUPP:
+                    printf("The referenced socket is not of type SOCK_STREAM.");
+                    break;
+                case EPROTO:
+                    printf("Protocol error.");
+                    break;
+                case EPERM:
+                    printf("Firewall rules forbid connection.");
+                    break;
+                default: printf("Unknown error!");
+            }
+            printf("\n");
+        }
+        
+        //demo operations
+        recv(c_socket,0,255,0);
+        char *str = "Hello from server";
+        send(c_socket,str,sizeof(str),0);
+    }
+
+    //step 5 :- close socket
+    if((close(s_socket)) != 0) {
+        printf("\nServer close error:\n\t");
+            switch(errno) {
+                case EBADF:
+                    printf("Not a valid open file descriptor.");
+                    break;
+                case EINTR:
+                    printf("Interrupted by a signal.");
+                    break;
+                case EIO:
+                    printf("An I/O error occurred.");
+                    break;
+                case ENOSPC:
+                case EDQUOT:
+                    printf("Subsequent write exceeded storage space.");
+                    break;
+                default: printf("Unknown error!");
+            }
+        printf("\n");
     }
 }

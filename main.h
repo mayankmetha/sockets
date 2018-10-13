@@ -10,7 +10,8 @@
 #include<sys/types.h>
 #include<sys/socket.h>
 #include<errno.h>
-#include<arpa/inet.h>
+#include<netinet/in.h>
+#include<signal.h>
 
 void server(unsigned int mode,unsigned int port);
-void client(unsigned int mode,unsigned int port);
+void client(unsigned int port);
