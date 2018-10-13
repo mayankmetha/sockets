@@ -4,7 +4,7 @@
 
 #To Execute
 
-`./socket.o [-s|-c] [-m (1|2)] [-p (port number)]`
+`./socket [-s|-c] [-m (1|2)] [-p (port number)]`
 
 [] are optional parameters
 
