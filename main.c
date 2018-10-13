@@ -1,25 +1,4 @@
-// POSIX standards
-#define _POSIX_SOURCE
-#define _POSIX_C_SOURCE 200809L
-
-// Headers
-#include<stdio.h>
-#include<unistd.h>
-#include<string.h>
-#include<stdlib.h>
-
-// Global variables
-unsigned int mode = 0;
-
-void server(unsigned int mode) {
-    // Server code goes here
-    printf("Server\n");
-}
-
-void client(unsigned int mode) {
-    // Client code goes here
-    printf("Client\n");
-}
+#include "main.h"
 
 void commandError() {
     // Command usage error message
@@ -28,6 +7,10 @@ void commandError() {
 
 // main
 int main(int argc, char *argv[]) {
+    //variables 
+    unsigned int mode = 0;
+    unsigned int port = 8080;
+    unsigned int operation = 0;
     for(int i = 1; i < argc; i++) {
         if(strcmp(argv[i], "-m") == 0) {
             i++;
@@ -39,14 +22,27 @@ int main(int argc, char *argv[]) {
             } else {
                 commandError();
             }
+        } else if(strcmp(argv[i], "-p") == 0) {
+            i++;
+            if(argv[i] != NULL) {
+                // port number
+                port = atoi(argv[i]);
+            } else {
+                commandError();
+            }
         } else if(strcmp(argv[i], "-s") == 0) {
             // Run as server
-            server(mode);
+            operation = 1;
         } else if(strcmp(argv[i], "-c") == 0) {
             // Run as client
-            client(mode); 
+            operation = 2;
         } else {
             commandError();
         }
+    }
+    if(operation == 1) {
+        server(mode,port);
+    } else if(operation == 2) {
+        client(mode,port);
     }
 }
