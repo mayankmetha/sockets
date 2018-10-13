@@ -17,7 +17,6 @@ void server(unsigned int mode,unsigned int port) {
     //internet address
     s_address.sin_family = AF_INET;
     //ip address
-    //TODO: make ip address dynamic
     s_address.sin_addr.s_addr = INADDR_ANY;
     //port address
     s_address.sin_port = htons(port);
