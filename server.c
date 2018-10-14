@@ -1,19 +1,14 @@
 #include "main.h"
 
-//interrupt variable
-int loopBreak = 0;
-
-//interrupt handler
-void inthandler(int signum) {
-    loopBreak = 1;
-}
-
 void server(unsigned int mode,unsigned int port) {
     //variables
     int backlog = 10;
     int s_socket;
     int c_socket;
     struct sockaddr_in s_address, c_address;
+
+    // memory resource
+    char *buffer = malloc(256);
 
     //assign values to s_address
     //internet address
@@ -40,7 +35,7 @@ void server(unsigned int mode,unsigned int port) {
                 printf("The per-process limit on the number of open file descriptors has been reached.");
                 break;
             case ENFILE:
-                printf("The per-process limit on the number of open file descriptors has been reached.");
+                printf("The system-wide limit on the total number of open files has been reached.");
                 break;
             case ENOBUFS:
             case ENOMEM:
@@ -52,6 +47,7 @@ void server(unsigned int mode,unsigned int port) {
             default: printf("Unknown error!");
         }
         printf("\n");
+        exit(1);
     }
 
     // step 2 :- bind socket to address
@@ -76,6 +72,7 @@ void server(unsigned int mode,unsigned int port) {
             default: printf("Unknown error!");
         }
         printf("\n");
+        exit(1);
     }
 
     // step 3 :- make socket listen for incoming connections
@@ -97,13 +94,11 @@ void server(unsigned int mode,unsigned int port) {
             default: printf("Unknown error!");
         }
         printf("\n");
+        exit(1);
     }
 
-    //interrupt registration
-    signal(SIGINT, inthandler);
-
     //step 4 :- accept client connection
-    while(!loopBreak) {
+    while(1) {
         socklen_t addrlen = sizeof(c_address);
         c_socket = accept(s_socket,(struct sockaddr *)&c_address,&addrlen);
         if(c_socket < 0) {
@@ -182,33 +177,62 @@ void server(unsigned int mode,unsigned int port) {
                 default: printf("Unknown error!");
             }
             printf("\n");
+            exit(1);
         }
         
         //demo operations
-        recv(c_socket,0,255,0);
-        char *str = "Hello from server";
+        int cont;
+        cont=recv(c_socket,buffer,256,0);
+		write(1,buffer,cont);
+        char str[] = "Hello from server\n";
         send(c_socket,str,sizeof(str),0);
+
+        if((close(c_socket)) != 0) {
+        printf("\nClient socket close error:\n\t");
+        switch(errno) {
+            case EBADF:
+                printf("Not a valid open file descriptor.");
+                break;
+            case EINTR:
+                printf("Interrupted by a signal.");
+                break;
+            case EIO:
+                printf("An I/O error occurred.");
+                break;
+            case ENOSPC:
+            case EDQUOT:
+                printf("Subsequent write exceeded storage space.");
+                break;
+            default: printf("Unknown error!");
+        }
+        printf("\n");
+        exit(1);
+        }
     }
 
-    //step 5 :- close socket
+    //step 5 :- close sockets
     if((close(s_socket)) != 0) {
         printf("\nServer close error:\n\t");
-            switch(errno) {
-                case EBADF:
-                    printf("Not a valid open file descriptor.");
-                    break;
-                case EINTR:
-                    printf("Interrupted by a signal.");
-                    break;
-                case EIO:
-                    printf("An I/O error occurred.");
-                    break;
-                case ENOSPC:
-                case EDQUOT:
-                    printf("Subsequent write exceeded storage space.");
-                    break;
-                default: printf("Unknown error!");
-            }
+        switch(errno) {
+            case EBADF:
+                printf("Not a valid open file descriptor.");
+                break;
+            case EINTR:
+                printf("Interrupted by a signal.");
+                break;
+            case EIO:
+                printf("An I/O error occurred.");
+                break;
+            case ENOSPC:
+            case EDQUOT:
+                printf("Subsequent write exceeded storage space.");
+                break;
+            default: printf("Unknown error!");
+        }
         printf("\n");
+        exit(1);
     }
+
+    // free up resource
+    free(buffer);
 }
