@@ -1,6 +1,11 @@
 #include "main.h"
 
-void client(unsigned int port, char *ip) {
+int main(int argc, char *argv[]) {
+    if(argc != 3) {
+        printf("Usage:%s ip port\n",argv[0]);
+        exit(1);
+    } 
+
     // variables
     int c_socket;
     struct sockaddr_in c_address;
@@ -12,9 +17,9 @@ void client(unsigned int port, char *ip) {
     //internet address
     c_address.sin_family = AF_INET;
     //ip address
-    c_address.sin_addr.s_addr = inet_addr(ip);
+    c_address.sin_addr.s_addr = inet_addr(argv[1]);
     //port address
-    c_address.sin_port = htons(port);
+    c_address.sin_port = htons(atoi(argv[2]));
 
     // step 1 :- create socket
     if((c_socket = socket(AF_INET,SOCK_STREAM,0)) < 0) {
@@ -109,9 +114,8 @@ void client(unsigned int port, char *ip) {
     //demo operations
     char str[] = "Hello from client\n";
     send(c_socket,str,sizeof(str),0);
-    int cont;
-    cont=recv(c_socket,buffer,256,0);
-    write(1,buffer,cont);
+    int cont=recv(c_socket,buffer,256,0);
+    write(STDOUT_FILENO,buffer,cont);
 
     //step 3 :- close socket
     if((close(c_socket)) != 0) {
@@ -138,4 +142,6 @@ void client(unsigned int port, char *ip) {
 
     // free up resource
     free(buffer);
+
+    return 0;
 }

@@ -11,7 +11,4 @@
 #include<sys/socket.h>
 #include<errno.h>
 #include<netinet/in.h>
-#include <arpa/inet.h>
-
-void server(unsigned int mode,unsigned int port);
-void client(unsigned int port, char *ip);
+#include<arpa/inet.h>
