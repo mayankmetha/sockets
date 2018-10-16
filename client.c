@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in c_address;
 
     // memory resource
-    char *buffer = malloc(256);
+    char buffer[256];
 
     //assign values to c_address
     //internet address
@@ -112,10 +112,12 @@ int main(int argc, char *argv[]) {
     }
 
     //demo operations
-    char str[] = "Hello from client\n";
-    send(c_socket,str,sizeof(str),0);
     int cont=recv(c_socket,buffer,256,0);
     write(STDOUT_FILENO,buffer,cont);
+    char str[256];
+    printf("Enter message to send to server:\n");
+    scanf("%s",str);
+    send(c_socket,str,sizeof(str),0);
 
     //step 3 :- close socket
     if((close(c_socket)) != 0) {
@@ -139,9 +141,6 @@ int main(int argc, char *argv[]) {
         printf("\n");
         exit(1);
     }
-
-    // free up resource
-    free(buffer);
 
     return 0;
 }

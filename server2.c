@@ -14,10 +14,7 @@ int main(int argc, char *argv[]) {
     struct sockaddr_in s_address, c_address;
 
     // memory resource
-    char *buffer;
-
-    //set buffer
-    buffer = malloc(256);
+    char buffer[256];
 
     //assign values to s_address
     //internet address
@@ -190,12 +187,11 @@ int main(int argc, char *argv[]) {
         }
 
         //demo operations
+        char str[] = "Hello from server\n";
+        send(c_socket,str,sizeof(str),0);
         int cont;
         cont=recv(c_socket,buffer,256,0);
         write(1,buffer,cont);
-        char str[] = "Hello from server\n";
-        send(c_socket,str,sizeof(str),0);
-
     }
 
     //step 5 :- close sockets
@@ -220,9 +216,6 @@ int main(int argc, char *argv[]) {
         printf("\n");
         exit(1);
     }
-
-    // free up resource
-    free(buffer);
 
     return 0;
 }
