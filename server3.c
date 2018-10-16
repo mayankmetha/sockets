@@ -84,29 +84,33 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    // step 3 :- make socket listen for incoming connections
-    if((listen(s_socket,backlog)) != 0) {
-        printf("\nServer listen error:\n\t");
-        switch(errno) {
-            case EADDRINUSE:
-                printf("The given address is already in use.");
-                break;
-            case EBADF:
-                printf("Not a valid file descriptor.");
-                break;
-            case EOPNOTSUPP:
-                printf("The socket is not of a type that supports this operation.");
-                break;
-            case ENOTSOCK:
-                printf("The file descriptor does not refer to a socket.");
-                break;
-            default: printf("Unknown error!");
-        }
-        printf("\n");
-        exit(1);
-    }
+    
+    pid_t pid;
 
     while(1) {
+
+        // step 3 :- make socket listen for incoming connections
+        if((listen(s_socket,backlog)) != 0) {
+            printf("\nServer listen error:\n\t");
+            switch(errno) {
+                case EADDRINUSE:
+                    printf("The given address is already in use.");
+                    break;
+                case EBADF:
+                    printf("Not a valid file descriptor.");
+                    break;
+                case EOPNOTSUPP:
+                    printf("The socket is not of a type that supports this operation.");
+                    break;
+                case ENOTSOCK:
+                    printf("The file descriptor does not refer to a socket.");
+                    break;
+                default: printf("Unknown error!");
+            }
+            printf("\n");
+            exit(1);
+        }
+
         // step 4 :- accept connection depend on mode
         socklen_t addrlen = sizeof(c_address);
         c_socket = accept(s_socket,(struct sockaddr *)&c_address,&addrlen);
@@ -189,14 +193,15 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
-        //demo operations
-        int cont;
-        cont=recv(c_socket,buffer,256,0);
-        write(1,buffer,cont);
-        char str[] = "Hello from server\n";
-        send(c_socket,str,sizeof(str),0);
+        if((pid = fork()) == 0) {
 
-        if(fork() == 0) {
+            //demo operations
+            int cont;
+            cont=recv(c_socket,buffer,256,0);
+            write(1,buffer,cont);
+            char str[] = "Hello from server\n";
+            send(c_socket,str,sizeof(str),0);
+
             //step 5 :- close sockets
             if((close(s_socket)) != 0) {
                 printf("\nServer close error:\n\t");
@@ -219,6 +224,7 @@ int main(int argc, char *argv[]) {
                 printf("\n");
                 exit(1);
             }
+            return 0;
         }
     }
     // free up resource
