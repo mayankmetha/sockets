@@ -12,6 +12,7 @@ int main(int argc, char *argv[]) {
 
     // memory resource
     char buffer[256];
+    memset(buffer,0,256);
 
     //assign values to c_address
     //internet address
@@ -117,7 +118,7 @@ int main(int argc, char *argv[]) {
     char str[256];
     printf("Enter message to send to server:\n");
     scanf("%s",str);
-    send(c_socket,str,sizeof(str),0);
+    send(c_socket,str,strlen(str),0);
 
     //step 3 :- close socket
     if((close(c_socket)) != 0) {

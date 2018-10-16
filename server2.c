@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
 
     // memory resource
     char buffer[256];
+    memset(buffer,0,256);
 
     //assign values to s_address
     //internet address
