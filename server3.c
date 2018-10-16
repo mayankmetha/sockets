@@ -224,10 +224,10 @@ int main(int argc, char *argv[]) {
                 printf("\n");
                 exit(1);
             }
+            // free up resource
+            free(buffer);
             return 0;
         }
     }
-    // free up resource
-    free(buffer);
     return 0;
 }
