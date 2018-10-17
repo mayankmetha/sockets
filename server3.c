@@ -82,32 +82,31 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
+    // step 3 :- make socket listen for incoming connections
+    if((listen(s_socket,backlog)) != 0) {
+        printf("\nServer listen error:\n\t");
+        switch(errno) {
+            case EADDRINUSE:
+                printf("The given address is already in use.");
+                break;
+            case EBADF:
+                printf("Not a valid file descriptor.");
+                break;
+            case EOPNOTSUPP:
+                printf("The socket is not of a type that supports this operation.");
+                break;
+            case ENOTSOCK:
+                printf("The file descriptor does not refer to a socket.");
+                break;
+            default: printf("Unknown error!");
+        }
+        printf("\n");
+        exit(1);
+    }
     
     pid_t pid;
 
     while(1) {
-
-        // step 3 :- make socket listen for incoming connections
-        if((listen(s_socket,backlog)) != 0) {
-            printf("\nServer listen error:\n\t");
-            switch(errno) {
-                case EADDRINUSE:
-                    printf("The given address is already in use.");
-                    break;
-                case EBADF:
-                    printf("Not a valid file descriptor.");
-                    break;
-                case EOPNOTSUPP:
-                    printf("The socket is not of a type that supports this operation.");
-                    break;
-                case ENOTSOCK:
-                    printf("The file descriptor does not refer to a socket.");
-                    break;
-                default: printf("Unknown error!");
-            }
-            printf("\n");
-            exit(1);
-        }
 
         // step 4 :- accept connection depend on mode
         socklen_t addrlen = sizeof(c_address);
