@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     // memory resource
     char buffer[256];
     memset(buffer,0,256);
-    
+
     //assign values to s_address
     //internet address
     s_address.sin_family = AF_INET;
@@ -194,18 +194,22 @@ int main(int argc, char *argv[]) {
 
             //seeding random number generator with current time
             srand(time(0));
-            
-            //demo operations
+
+            recv(c_socket,buffer,256,0);
+            int limit = atoi(buffer);
+            char str[] = "Hello from server\n";
             char client_name[50];
             sprintf(client_name,"Client %d: ",rand());
-            char str[] = "Hello from server\n";
             send(c_socket,str,sizeof(str),0);
             int cont;
-            cont=recv(c_socket,buffer,256,0);
-            write(STDOUT_FILENO,client_name,strlen(client_name));
-            write(STDOUT_FILENO,buffer,cont);
-            write(STDOUT_FILENO,"\n",1);
-
+            for(int i = 0; i < limit; i++) {
+                memset(buffer,0,256);
+                cont=recv(c_socket,buffer,256,0);
+                write(STDOUT_FILENO,client_name,strlen(client_name));
+                write(STDOUT_FILENO,buffer,cont);
+                write(STDOUT_FILENO,"\n",1);
+                send(c_socket,buffer,cont,0);
+            }
 
             //close c_socket
             if((close(c_socket)) != 0) {

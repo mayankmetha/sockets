@@ -187,12 +187,42 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
+        //seeding random number generator with current time
+        srand(time(0));
+
         //demo operations
+        char client_name[50];
+        sprintf(client_name,"Client %d: ",rand());
         char str[] = "Hello from server\n";
         send(c_socket,str,sizeof(str),0);
         int cont;
         cont=recv(c_socket,buffer,256,0);
-        write(1,buffer,cont);
+        write(STDOUT_FILENO,client_name,strlen(client_name));
+        write(STDOUT_FILENO,buffer,cont);
+        write(STDOUT_FILENO,"\n",1);
+
+        //close c_socket
+        if((close(c_socket)) != 0) {
+            printf("\nClient close error:\n\t");
+            switch(errno) {
+                case EBADF:
+                    printf("Not a valid open file descriptor.");
+                    break;
+                case EINTR:
+                    printf("Interrupted by a signal.");
+                    break;
+                case EIO:
+                    printf("An I/O error occurred.");
+                    break;
+                case ENOSPC:
+                case EDQUOT:
+                    printf("Subsequent write exceeded storage space.");
+                    break;
+                default: printf("Unknown error!");
+            }
+            printf("\n");
+            exit(1);
+        }
     }
 
     //step 5 :- close sockets
