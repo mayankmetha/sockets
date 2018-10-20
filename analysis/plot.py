@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import csv
+import sys
 
 x = []
 y = []
 
-with open("packetTime","r") as csvFile:
+with open(sys.argv[1],"r") as csvFile:
     plots = csv.reader(csvFile,delimiter=",")
     for row in plots:
         x.append(int(row[0]))
