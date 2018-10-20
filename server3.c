@@ -190,7 +190,7 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
 
-        if((pid = fork()) > 0) {
+        if((pid = fork()) == 0) {
 
             //seeding random number generator with current time
             srand(time(0));
