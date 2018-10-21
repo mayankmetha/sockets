@@ -1,15 +1,12 @@
 import matplotlib.pyplot as plt
-import csv
 import sys
 
 x = []
 y = []
 
-with open(sys.argv[1],"r") as csvFile:
-    plots = csv.reader(csvFile,delimiter=",")
-    for row in plots:
-        x.append(int(row[0]))
-        y.append(float(row[1]))
+for line in sys.stdin:
+    x.append(int(line.split(",")[0]))
+    y.append(float(line.split(",")[1]))
 
 plt.plot(x,y)
 plt.xlabel('Message number')
