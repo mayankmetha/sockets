@@ -43,11 +43,11 @@ Working:
               
 	      * In the iterative process of communication after successful connection server terminates responding to client.
               
-	      * In the concurrent process of communication server stays online and responds to all the clients, trying to connect with                        server parallely.
+	      * In the concurrent process of communication server stays online and responds to all the clients, trying to connect with server parallely.
               
-	      * When scaling more than 1000+ clients notifies the response time of all the triggering clients until the server crashes                   at a thresold.
+	      * When scaling more than 1000+ clients notifies the response time of all the triggering clients until the server crashes at a thresold.
               
-	      * Error conditions: Tried with all posibble error conditions while creating sockets, bind, listen, accept, closing sockets                 funtionalities using the MAN page error ID's.
+	      * Error conditions: Tried with all posibble error conditions while creating sockets, bind, listen, accept, closing sockets funtionalities using the MAN page error ID's.
 
 CHALLENGES:
 
@@ -57,9 +57,9 @@ There is never an easy solution till we hit a difficult challenge. Similarly, we
      
      * The concurrent server was more of a conceptual misunderstaning of fork() which was solved when a friend Prashant helped us                understand the underlying process of fork(). 
      
-     * The second problem was how to launch a thousand clients to analyse the response. Most of the suggestions from stackoverflow               and github were leading to iterative client process thats when we decided to experiment with fork() and the results were                 brillant.
+     * The second problem was how to launch a thousand clients to analyse the response. Most of the suggestions from stackoverflow and github were leading to iterative client process thats when we decided to experiment with fork() and the results were brillant.
      
-     * The last problem was the overwhelming data from server and clients during scaling making analysis difficult. The solution was             filtering data and visualizing it using bash and pyhton scripts.
+     * The last problem was the overwhelming data from server and clients during scaling making analysis difficult. The solution was filtering data and visualizing it using bash and pyhton scripts.
 
 
 DETAILS AND EXPLANATIONS OF RESULTS OBTAINED 
