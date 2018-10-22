@@ -55,7 +55,7 @@ CHALLENGES:
 
 There is never an easy solution till we hit a difficult challenge. Similarly, we too faced few challenges in concurrent server and server loading with huge amount of request. 
      
-     * The concurrent server was more of a conceptual misunderstaning of fork() which was solved when a friend Prashant helped us                understand the underlying process of fork(). 
+     * The concurrent server was more of a conceptual misunderstaning of fork() which was solved when a friend Prashant helped us understand the underlying process of fork(). 
      
      * The second problem was how to launch a thousand clients to analyse the response. Most of the suggestions from stackoverflow and github were leading to iterative client process thats when we decided to experiment with fork() and the results were brillant.
      
